@@ -21,7 +21,7 @@ export default function CreatePlayer() {
         walletAddress: newWallet.address,
         tokenBalance: 0,
       };
-      const response = await axios.post("https://nodejs-web3.onrender.com/v1/api/createplayer", playerData);
+      const response = await axios.post("https://public-nodejs.onrender.com/v1/api/createplayer", playerData);
       setWallet(response.data.data);
       console.log("Dữ liệu post: ", wallet);
       setError(null);

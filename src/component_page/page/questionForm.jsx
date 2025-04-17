@@ -11,7 +11,7 @@ function QuestionForm() {
 
   useEffect(() => {
     axios
-      .get("https://nodejs-web3.onrender.com/v1/api/generateQuestion")
+      .get("https://public-nodejs.onrender.com/v1/api/generateQuestion")
       .then((response) => {
         if (response.data.success) {
           setQuestions(response.data.data);
@@ -69,7 +69,7 @@ function QuestionForm() {
     };
 
     try {
-      const response = await axios.post("https://nodejs-web3.onrender.com/v1/api/kiemtra", data);
+      const response = await axios.post("https://public-nodejs.onrender.com/v1/api/kiemtra", data);
       if (response.data.success) {
         const { isPassed, ketQua } = response.data.data;
         setResult({ isPassed, ketQua });

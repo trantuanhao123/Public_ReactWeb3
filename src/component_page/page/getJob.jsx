@@ -23,8 +23,9 @@ const JobList = () => {
 
     const fetchJobs = async () => {
       try {
-        const response = await axios.get("https://nodejs-web3.onrender.com/v1/api/getjob");
+        const response = await axios.get("https://public-nodejs.onrender.com/v1/api/getjob");
         if (response.data.success) {
+          console.log("Fetched jobs:", response.data.data); // Debug job data
           setJobs(response.data.data);
         } else {
           throw new Error("Dữ liệu không hợp lệ");
@@ -65,42 +66,61 @@ const JobList = () => {
     }
 
     try {
-      const checkResponse = await axios.post(
-        "https://nodejs-web3.onrender.com/v1/api/kiemtrajob",
-        {
-          userAnswer: answer.trim(),
-          jobAnswer: selectedJob.correctAnswer.trim(),
-        }
-      );
+      // Normalize user answer
+      const userAnswer = answer.trim();
 
-      if (!checkResponse.data.success) {
-        setErrorMessage(checkResponse.data.message || "Có lỗi khi kiểm tra câu trả lời!");
+      // Check if correctAnswer exists
+      if (!selectedJob.correctAnswer) {
+        setErrorMessage("Câu trả lời đúng không tồn tại trong dữ liệu công việc!");
         return;
       }
 
-      const { isTrue } = checkResponse.data.data;
+      let correctAnswer;
+      try {
+        // Handle correctAnswer based on its type
+        if (typeof selectedJob.correctAnswer === "string") {
+          correctAnswer = selectedJob.correctAnswer.trim();
+        } else {
+          correctAnswer = JSON.stringify(selectedJob.correctAnswer).trim();
+        }
+      } catch (err) {
+        console.error("Lỗi khi xử lý correctAnswer:", err);
+        setErrorMessage("Lỗi định dạng câu trả lời đúng từ cơ sở dữ liệu!");
+        return;
+      }
 
-      if (!isTrue) {
+      // Log for debugging
+      console.log("User Answer:", userAnswer);
+      console.log("Correct Answer:", correctAnswer);
+
+      // Compare answers
+      const isCorrect = userAnswer === correctAnswer;
+
+      if (!isCorrect) {
         setErrorMessage("Câu trả lời chưa chính xác. Vui lòng thử lại!");
         return;
       }
 
-      await axios.post("https://nodejs-web3.onrender.com/v1/api/createwinner", {
+      // Create winner record
+      await axios.post("https://public-nodejs.onrender.com/v1/api/createwinner", {
         jobTitle: selectedJob.title,
         userAnswer: answer,
         maNguoiChoi: maNguoiChoi,
         diaChiVi: diaChiVi,
       });
 
-      await axios.post("https://nodejs-web3.onrender.com/v1/api/updateplayer", {
+      // Update player token balance
+      await axios.post("https://public-nodejs.onrender.com/v1/api/updateplayer", {
         maNguoiChoi: maNguoiChoi,
         tokenBalance: selectedJob.rewardAmount,
       });
 
-      await axios.post("https://nodejs-web3.onrender.com/v1/api/updatejobs", {
+      // Update job status
+      await axios.post("https://public-nodejs.onrender.com/v1/api/updatejobs", {
         title: selectedJob.title,
       });
 
+      // Update local job state
       setJobs((prevJobs) =>
         prevJobs.map((job) =>
           job.title === selectedJob.title ? { ...job, isCompleted: true } : job
@@ -113,6 +133,7 @@ const JobList = () => {
       setSelectedJob(null);
       setAnswer("");
     } catch (err) {
+      console.error("Lỗi trong handleSubmitAnswer:", err);
       setErrorMessage(`Lỗi: ${err.response?.data?.message || err.message}`);
     }
   };
@@ -157,7 +178,7 @@ const JobList = () => {
           <textarea
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
-            placeholder="Nhập câu trả lời của bạn"
+            placeholder="Nhập câu trả lời của bạn (JSON pipeline hoặc chuỗi)"
           />
           {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
           <button onClick={handleSubmitAnswer}>Gửi</button>

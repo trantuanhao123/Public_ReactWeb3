@@ -12,7 +12,7 @@ const PredictionsList = () => {
   useEffect(() => {
     const fetchPredictions = async () => {
       try {
-        const response = await axios.get("https://nodejs-web3.onrender.com/v1/api/getwinner");
+        const response = await axios.get("https://public-nodejs.onrender.com/v1/api/getwinner");
         if (!response.data.success || !Array.isArray(response.data.data) || response.data.data.length === 0) {
           setPredictions([]);
           return;
