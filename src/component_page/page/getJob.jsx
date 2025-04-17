@@ -114,12 +114,10 @@ const JobList = () => {
         maNguoiChoi: maNguoiChoi,
         tokenBalance: selectedJob.rewardAmount,
       });
-
-      // Update job status
+      //Update job status
       await axios.post("https://public-nodejs.onrender.com/v1/api/updatejobs", {
         title: selectedJob.title,
       });
-
       // Update local job state
       setJobs((prevJobs) =>
         prevJobs.map((job) =>
