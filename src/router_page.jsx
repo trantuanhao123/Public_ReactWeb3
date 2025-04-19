@@ -9,10 +9,17 @@ const routes = [
     element: (
       <>
         <CreatePlayer />
-        <QuestionForm />
         <ThongBao />
       </>
     ),
+  },
+  {
+    path: '/question',
+    element:
+        <>
+          <QuestionForm />
+          <ThongBao />
+        </>
   },
   {
     path: '/getjobs',

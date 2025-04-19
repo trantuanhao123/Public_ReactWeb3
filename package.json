@@ -15,7 +15,8 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "push-deploy": "git add . && git commit -m \"auto commit\" && git push origin main && npm run deploy"
   },
   "dependencies": {
     "@rjsf/core": "^5.24.8",

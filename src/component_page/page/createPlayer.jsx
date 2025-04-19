@@ -2,7 +2,8 @@ import { useState } from "react";
 import { ethers } from "ethers";
 import axios from "axios";
 import Form from "@rjsf/core";
-import validator from "@rjsf/validator-ajv8"; 
+import validator from "@rjsf/validator-ajv8";
+import { useNavigate } from "react-router-dom";
 
 const schema = {
   type: "object",
@@ -17,8 +18,8 @@ const schema = {
 };
 
 export default function CreatePlayer() {
-  const [wallet, setWallet] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async ({ formData }) => {
     try {
@@ -32,13 +33,22 @@ export default function CreatePlayer() {
         "https://public-nodejs.onrender.com/v1/api/createplayer",
         playerData
       );
-      setWallet(response.data.data);
-      setError(null);
-      alert("Ví đã được lưu vào cơ sở dữ liệu!");
+
+      const wallet = response.data.data;
+
+      // Hiển thị thông tin bằng alert
+      alert(
+        "🎯 Ghi chú quan trọng:\n" +
+        "Hãy lưu lại thông tin ví này, bạn sẽ cần nó cho các bước tiếp theo!\n\n" +
+        `Người Ứng Tuyển: ${wallet.name}\n` +
+        `Địa Chỉ Ví: ${wallet.walletAddress}\n` +
+        `Số Dư: ${wallet.tokenBalance} Token`
+      );
+      // Sau khi bấm OK trong alert => điều hướng
+      navigate("/question");
     } catch (err) {
       console.error("Lỗi khi lưu ví:", err);
       setError("Lưu ví thất bại, có thể do tên người chơi đã tồn tại");
-      setWallet(null);
     }
   };
 
@@ -51,13 +61,6 @@ export default function CreatePlayer() {
       <Form schema={schema} onSubmit={handleSubmit} validator={validator} />
 
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {wallet && !error && (
-        <div>
-          <p><strong>Người Ứng Tuyển:</strong> {wallet.name}</p>
-          <p><strong>Địa Chỉ Ví:</strong> {wallet.walletAddress}</p>
-          <p><strong>Số Dư:</strong> {wallet.tokenBalance} Token</p>
-        </div>
-      )}
     </div>
   );
 }
