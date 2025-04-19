@@ -1,7 +1,7 @@
-import CreatePlayer from './component_page/page/createPlayer.jsx';
-import QuestionForm from './component_page/page/questionForm.jsx';
-import ThongBao from './component_page/page/thongBao.jsx';
-import GetJob from './component_page/page/getJob.jsx';
+import CreatePlayer from './component_page/createPlayer.jsx';
+import QuestionForm from './component_page/questionForm.jsx';
+import ThongBao from './component_page/thongBao.jsx';
+import GetJob from './component_page/getJob.jsx';
 
 const routes = [
   {
