@@ -4,7 +4,10 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter basename="/Public_ReactWeb3">
-    <App />
-  </BrowserRouter>
+  // <BrowserRouter basename="/Public_ReactWeb3">
+  //   <App />
+  // </BrowserRouter>
+  <BrowserRouter>
+  <App />
+</BrowserRouter>
 );
